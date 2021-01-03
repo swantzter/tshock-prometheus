@@ -21,7 +21,7 @@ namespace TShockPrometheus {
     /// Set your plugin's order (optional) and any other constructor logic here
     /// </summary>
     public TShockPrometheus(Main game) : base(game) {
-      server = new MetricServer(hostname: "localhost", port: 9763);
+      server = new MetricServer(port: 9763);
     }
 
     #region Initialize/Dispose

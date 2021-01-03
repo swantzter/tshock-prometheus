@@ -3,13 +3,13 @@
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
     <Platforms>x86</Platforms>
-    <Company>Svante Bengtson</Company>
-    <Version>0.1.0</Version>
+    <Company>Swantzter</Company>
+    <Version>1.0.0</Version>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>https://github.com/swantzter/tshock-prometheus</RepositoryUrl>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <Copyright>2021</Copyright>
-    <Authors>Swantzter</Authors>
+    <Authors>Svante Bengtson</Authors>
     <Description>Exports TShock data to Prometheus</Description>
     <PackageTags>Terraria TShock plugin Mono C# .NET CSharp</PackageTags>
     <AssemblyName>TShockPrometheus</AssemblyName>
