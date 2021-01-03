@@ -7,18 +7,14 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 4.5
-    - name: Restore dependencies
-      run: dotnet restore
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1
     - name: Build
-      run: dotnet build --no-restore
+      run: msbuild /p:Configuration=Release
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.1
       with:
