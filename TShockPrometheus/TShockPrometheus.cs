@@ -2,6 +2,7 @@
 using System.Reflection;
 using Terraria;
 using TerrariaApi.Server;
+using TShockAPI;
 using Prometheus;
 
 namespace TShockPrometheus {
@@ -44,7 +45,7 @@ namespace TShockPrometheus {
 
     #region Hooks
     private void OnLeave(LeaveEventArgs args) {
-      if (args.Who == TShock.Players.Count(p => p != null)) return;
+      if (TShock.Players[args.Who] == null) return;
       ConnectedPlayersGauge.Dec(1);
     }
 
