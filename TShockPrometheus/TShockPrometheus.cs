@@ -14,7 +14,7 @@ namespace TShockPrometheus {
     public override string Description { get { return "Exports TShock data to Prometheus"; } }
 
     private static readonly Gauge ConnectedPlayersGauge = Metrics.CreateGauge("tshock_connected_player_count", "connected players");
-    private static readonly MetricServer server;
+    private static MetricServer server;
 
     /// <summary>
     /// The plugin's constructor
