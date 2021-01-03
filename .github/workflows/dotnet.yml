@@ -15,6 +15,10 @@ jobs:
       uses: microsoft/setup-msbuild@v1
     - name: NuGet
       run: nuget restore
+    - name: Get TShock libs
+      run: |
+        curl -fsSLJo TShock.zip https://github.com/Pryaxis/TShock/releases/download/v4.4.0-pre15/TShock4.4.0_Pre15_Terraria1.4.1.2.zip
+        7z e TShock.zip -o.\lib\ OTAPI.dll TerrariaServer.exe TShockAPI.dll -r
     - name: Build
       run: msbuild /p:Configuration=Release
     - name: Upload a Build Artifact
