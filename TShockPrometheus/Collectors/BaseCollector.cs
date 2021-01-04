@@ -1,4 +1,5 @@
 using Prometheus;
+using TerrariaApi.Server;
 
 namespace TShockPrometheus.Collectors {
   public abstract class BaseCollector {
@@ -6,48 +7,52 @@ namespace TShockPrometheus.Collectors {
     /// <summary>
     /// Common Prefix for all metric names
     /// </summary>
-    private readonly static string PREFIX = "factorio_";
+    private readonly static string PREFIX = "tshock_";
+
+    public static string name;
 
     /// <summary>
-    /// If the collection of this metric is enabled or not. set this in
-    /// Initialize and Dispose
+    /// Whether or not the Collector is enabled
     /// </summary>
-    protected boolean enabled = false;
+    public bool enabled = false;
 
-    protected Registry registry;
+    /// <summary>
+    /// The terraria plugin this collector is part of
+    /// </summary>
+    protected TerrariaPlugin plugin;
 
     /// <summary>
     /// Constructor
     /// </summary>
-    public BaseCollector (Registry promRegistry) {
-      this.registry = promRegistry
+    /// <param name="plugin">The Terraria Plugin</param>
+    public BaseCollector (TerrariaPlugin plugin) {
+      this.plugin = plugin;
     }
 
     #region Initialize/Dispose
     /// <summary>
-    /// Hooks into Terraria/Whatever or schedules the collector in some other
-    /// way. Such as by timer or prometheus-net's "before collect metrics" thing
-    /// and registers the collector into the Prometheus Registry
+    /// This function should hook into the appropriate Terraria/TShock/Whatever
+    /// Hooks, or enqueue the collection of metrics somehow.
+    ///
+    /// It should not run if enabled is true, and it should set enabled to true
+    /// once it is done.
     /// </summary>
     public abstract void Initialize ();
 
     /// <summary>
-    /// Unhooks Terraria/Whatever and de-registers the collector
-    /// from the Prometheus Registry
+    /// This function should unhook/undo whatever Initialize did so that the
+    /// metric is no longer collected.
+    ///
+    /// It should not run if enabled is false, and it should set enabled to
+    /// false once it is done.
     /// </summary>
     public abstract void Dispose ();
     #endregion
 
     /// <summary>
-    /// The hook handler this is where you collect data from Terraria or
-    /// whatever and records it in the Prometheus Collector
-    /// </summary>
-    protected abstract void Collect ();
-
-    /// <summary>
     /// Prefixes the metric name with the shared prefix,
     /// should be used by all collectors when creating the Collector
     /// </summary>
-    protected string Prefix (string name) => PREFIX + name;
+    protected static string Prefix (string name) => PREFIX + name;
   }
 }
