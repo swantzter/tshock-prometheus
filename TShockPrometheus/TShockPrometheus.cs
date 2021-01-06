@@ -44,6 +44,7 @@ namespace TShockPrometheus {
       server = new MetricServer(port: 9763); // TODO: read config
 
       collectors.Add(new Collectors.ConnectedPlayers(this));
+      collectors.Add(new Collectors.DotNetStats(this));
     }
 
     #region Initialize/Dispose
