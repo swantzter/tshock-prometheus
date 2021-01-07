@@ -1,6 +1,3 @@
-// Adapted from https://github.com/prometheus-net/prometheus-net/blob/master/Prometheus.NetStandard/DotNetStats.cs#L27
-//
-
 using Prometheus;
 using TerrariaApi.Server;
 using System;
@@ -8,6 +5,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace TShockPrometheus.Collectors {
+  /// <summary>
+  /// Adapted from https://github.com/prometheus-net/prometheus-net/blob/1cfbebb79719b9016284b7ded8dc5ef93e500fea/Prometheus.NetStandard/DotNetStats.cs
+  /// </summary>
   class DotNetStats : BaseCollector {
 
     /// <summary>
@@ -29,13 +29,18 @@ namespace TShockPrometheus.Collectors {
     #endregion
 
     public DotNetStats (TerrariaPlugin plugin) : base(plugin) {
-      for (var gen = 0; gen <= GC.MaxGeneration; gen++)
-      {
+      for (var gen = 0; gen <= GC.MaxGeneration; gen++) {
         collectionCounts.Add(collectionCountsParent.Labels(gen.ToString()));
       }
 
       var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
       startTime.Set((process.StartTime.ToUniversalTime() - epoch).TotalSeconds);
+
+      // We hook here to prevent hooking the same thing twice
+      // seeing that we can't unhook from this hook
+      // Otherwise Initialize(); Dispose(); Initialize(); could cause
+      // the hook to be added twice
+      Metrics.DefaultRegistry.AddBeforeCollectCallback(Collect);
     }
 
     #region Initialize/Dispose
@@ -44,18 +49,15 @@ namespace TShockPrometheus.Collectors {
     /// </summary>
     public override void Initialize () {
       if (enabled) return;
-
-      Metrics.DefaultRegistry.AddBeforeCollectCallback(Collect);
-
       enabled = true;
     }
 
     public override void Dispose () {
       if (!enabled) return;
 
-      // TODO: disable. I don't think we can tbh
+      // TODO: unhook for real. I don't think we can tbh
 
-      // enabled = false;
+      enabled = false;
     }
     #endregion
 
@@ -69,14 +71,12 @@ namespace TShockPrometheus.Collectors {
     /// export
     /// </summary>
     private void Collect () {
-      try
-      {
-        lock (_updateLock)
-        {
+      if (!enabled) return; // a bit of a hack because we can't unhook
+      try {
+        lock (_updateLock) {
           process.Refresh();
 
-          for (var gen = 0; gen <= GC.MaxGeneration; gen++)
-          {
+          for (var gen = 0; gen <= GC.MaxGeneration; gen++) {
             var collectionCount = collectionCounts[gen];
             collectionCount.Inc(GC.CollectionCount(gen) - collectionCount.Value);
           }
@@ -90,9 +90,7 @@ namespace TShockPrometheus.Collectors {
           numThreads.Set(process.Threads.Count);
         }
       }
-      catch (Exception)
-      {
-      }
+      catch (Exception) {}
     }
     #endregion
   }
