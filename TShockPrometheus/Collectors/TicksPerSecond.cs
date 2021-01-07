@@ -109,6 +109,7 @@ namespace TShockPrometheus.Collectors {
     }
 
     private void Collect () {
+      if (!enabled) return;
       lock (tpsQueue) {
         float sum = 0;
         foreach (float tps in tpsQueue) {
