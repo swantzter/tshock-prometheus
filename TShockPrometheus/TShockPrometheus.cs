@@ -54,8 +54,8 @@ namespace TShockPrometheus {
     public override void Initialize () {
       server.Start();
 
-      for (int idx = 0; idx < collectors.Count; idx++) {
-        collectors[idx].Initialize(); // TODO: init based on enabled or not in config
+      foreach (Collectors.BaseCollector collector in collectors) {
+        collector.Initialize(); // TODO: init based on enabled or not in config
       }
     }
 
@@ -67,8 +67,8 @@ namespace TShockPrometheus {
     protected override void Dispose (bool disposing) {
       if (disposing) {
         server.Stop();
-        for (int idx = 0; idx < collectors.Count; idx++) {
-          collectors[idx].Dispose();
+        foreach (Collectors.BaseCollector collector in collectors) {
+          collector.Dispose();
         }
       }
       base.Dispose(disposing);
