@@ -45,6 +45,7 @@ namespace TShockPrometheus {
 
       collectors.Add(new Collectors.ConnectedPlayers(this));
       collectors.Add(new Collectors.DotNetStats(this));
+      collectors.Add(new Collectors.TicksPerSecond(this));
     }
 
     #region Initialize/Dispose

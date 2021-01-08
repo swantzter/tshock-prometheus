@@ -16,7 +16,7 @@ namespace TShockPrometheus.Collectors {
     /// because names are unique, so we couldn't create a copy for each class
     /// instance.
     /// </summary>
-    static readonly Gauge collector = Metrics.CreateGauge(Prefix("ticks_per_seconds_average"), "Server TPS (ticks per second) over the last 20 seconds");
+    static readonly Gauge collector = Metrics.CreateGauge(Prefix("ticks_per_second"), "Server TPS (ticks per second) over the last 20 seconds");
 
     /// <summary>
     /// Max amount of ticks that should happen per second
@@ -110,6 +110,12 @@ namespace TShockPrometheus.Collectors {
 
     private void Collect () {
       if (!enabled) return;
+
+      if (tpsQueue.Count == 0) {
+        collector.Set(TICKS_PER_SECOND);
+        return;
+      }
+
       lock (tpsQueue) {
         float sum = 0;
         foreach (float tps in tpsQueue) {
