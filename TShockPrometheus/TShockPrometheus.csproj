@@ -13,11 +13,17 @@
     <PackageTags>Terraria TShock plugin Mono C# .NET CSharp</PackageTags>
     <AssemblyName>TShockPrometheus</AssemblyName>
     <NeutralLanguage>en-UK</NeutralLanguage>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="prometheus-net" Version="4.1.1" />
-    <PackageReference Include="TShock" Version="5.*" />
+    <PackageReference Include="prometheus-net" Version="7.0.0">
+      <IncludeAssets>all</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="TShock" Version="5.*" >
+      <IncludeAssets>compile</IncludeAssets> <!-- Don't copy TShock deps to output folder -->
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>
