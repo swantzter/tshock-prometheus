@@ -1,8 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
-    <Platforms>x86</Platforms>
+    <TargetFrameworks>net6.0</TargetFrameworks>
     <Company>Swantzter</Company>
     <Version>2.0.0</Version>
     <RepositoryType>git</RepositoryType>
@@ -14,24 +13,17 @@
     <PackageTags>Terraria TShock plugin Mono C# .NET CSharp</PackageTags>
     <AssemblyName>TShockPrometheus</AssemblyName>
     <NeutralLanguage>en-UK</NeutralLanguage>
-    <ApplicationIcon />
-    <Win32Resource />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="prometheus-net" Version="4.1.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="OTAPI">
-      <HintPath>..\lib\OTAPI.dll</HintPath>
-    </Reference>
-    <Reference Include="TerrariaServer">
-      <HintPath>..\lib\TerrariaServer.exe</HintPath>
-    </Reference>
-    <Reference Include="TShockAPI">
-      <HintPath>..\lib\TShockAPI.dll</HintPath>
-    </Reference>
+    <PackageReference Include="prometheus-net" Version="4.2.0">
+      <IncludeAssets>all</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="TShock" Version="5.*" >
+      <IncludeAssets>compile</IncludeAssets> <!-- Don't copy TShock deps to output folder -->
+    </PackageReference>
   </ItemGroup>
 
   <ItemGroup>

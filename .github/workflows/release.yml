@@ -14,25 +14,23 @@ jobs:
     - uses: actions/checkout@v2
     - uses: olegtarasov/get-tag@v2.1
       id: tagName
-    - name: setup-msbuild
-      uses: microsoft/setup-msbuild@v1
-    - name: NuGet
-      run: nuget restore
-    - name: Get TShock libs
-      run: |
-        curl -fsSLJo TShock.zip https://github.com/Pryaxis/TShock/releases/download/v4.4.0-pre15/TShock4.4.0_Pre15_Terraria1.4.1.2.zip
-        7z e TShock.zip -olib\ OTAPI.dll TerrariaServer.exe TShockAPI.dll -r
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: 6.0.x
+    - name: Restore dependencies
+      run: dotnet restore
     - name: Build
-      run: msbuild /p:Configuration=Release
+      run: dotnet build --no-restore -c Release
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.1
       with:
         path: TShockPrometheus/bin/**/*
     - name: Prepare Release Artifact
       run: |
-        cd TShockPrometheus\bin\x86\Release\net462\
-        7z a ..\..\..\..\..\TShockPrometheus-${{ steps.tagName.outputs.tag }}.zip TShockPrometheus.dll System.ValueTuple.dll Prometheus.NetStandard.dll
-        cd ..\..\..\..\..
+        cd TShockPrometheus\bin\Release\net6.0\
+        7z a ..\..\..\..\TShockPrometheus-${{ steps.tagName.outputs.tag }}.zip TShockPrometheus.dll System.ValueTuple.dll Prometheus.NetStandard.dll
+        cd ..\..\..\..
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1.1.4
