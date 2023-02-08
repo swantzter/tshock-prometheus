@@ -7,8 +7,10 @@ on:
 
 jobs:
   build:
-
     runs-on: windows-latest
+
+    permissions:
+      contents: write
 
     steps:
     - uses: actions/checkout@v2
@@ -21,30 +23,14 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
-      run: dotnet build --no-restore -c Release
+      run: dotnet pack --no-restore -c Release
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.1
       with:
         path: TShockPrometheus/bin/**/*
-    - name: Prepare Release Artifact
-      run: |
-        cd TShockPrometheus\bin\Release\net6.0\
-        7z a ..\..\..\..\TShockPrometheus-${{ steps.tagName.outputs.tag }}.zip TShockPrometheus.dll System.ValueTuple.dll Prometheus.NetStandard.dll
-        cd ..\..\..\..
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1.1.4
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
+        name: ${{ steps.tagName.outputs.tag }}
         tag_name: ${{ github.ref }}
-        release_name: ${{ github.ref }}
-    - name: Upload Release Artifacts
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: TShockPrometheus-${{ steps.tagName.outputs.tag }}.zip
-        asset_name: TShockPrometheus-${{ steps.tagName.outputs.tag }}.zip
-        asset_content_type: application/zip
+        files: TShockPrometheus/bin/Release/TShockPrometheus*.nupkg
